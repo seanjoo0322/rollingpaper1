@@ -1,0 +1,1940 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>롤링 페이퍼 - MZ 스타일</title>
+  <style>
+    /* Import Google Font - Pretendard is a Korean font, ensuring good readability */
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap');
+    
+    /* Global Reset and Box Sizing */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    /* Body Styling */
+    body {
+      background: linear-gradient(135deg, #f8f9ff 0%, #fff0f8 50%, #f0f8ff 100%); /* Soft gradient background */
+      font-family: 'Pretendard', sans-serif; /* Primary font */
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden; /* Prevent horizontal scrolling */
+      color: #333; /* Dark gray text color */
+      min-height: 100vh; /* Full viewport height */
+    }
+    
+    /* Screen Container Styles */
+    .screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      padding: 20px;
+      transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1); /* Smooth screen transitions */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: inherit; /* Inherit background from body */
+      z-index: 10; /* Base z-index for screens */
+    }
+    
+    /* Hidden Screen State */
+    .hidden {
+      transform: translateX(100%); /* Slide out to the right when hidden */
+    }
+    
+    /* Welcome/Form Container Styles */
+    .welcome-container {
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      padding: 48px 40px;
+      background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+      backdrop-filter: blur(20px); /* Frosted glass effect */
+      border-radius: 32px; /* Rounded corners */
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 32px rgba(0, 0, 0, 0.04); /* Soft shadows */
+      border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Decorative top border for welcome container */
+    .welcome-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #bb1fe6, #5c33f6, #ff4081, #00bcd4); /* Colorful gradient */
+      border-radius: 32px 32px 0 0;
+    }
+    
+    /* Heading Styles */
+    h1 {
+      font-size: clamp(1.8rem, 5vw, 2.4rem); /* Responsive font size */
+      font-weight: 700;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #bb1fe6, #5c33f6, #ff4081); /* Gradient text color */
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    
+    /* Paragraph Styles */
+    p {
+      margin: 16px 0 32px 0;
+      font-size: clamp(0.9rem, 2.5vw, 1.05rem); /* Responsive font size */
+      line-height: 1.6;
+      color: #666;
+      font-weight: 400;
+    }
+    
+    /* Input Field Styles */
+    input {
+      width: 100%;
+      padding: 18px 24px;
+      margin: 8px 0;
+      border: none;
+      background-color: rgba(248, 248, 248, 0.9); /* Light background */
+      border-radius: 20px; /* Rounded corners */
+      font-size: clamp(0.9rem, 2.5vw, 1rem);
+      font-family: 'Pretendard', sans-serif;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth transitions */
+      border: 2px solid transparent; /* Transparent border for focus effect */
+      font-weight: 400;
+    }
+    
+    /* Input Focus State */
+    input:focus {
+      outline: none;
+      border: 2px solid #bb1fe6; /* Highlight border on focus */
+      background-color: rgba(255, 255, 255, 0.95);
+      transform: translateY(-1px); /* Slight lift effect */
+      box-shadow: 0 8px 25px rgba(187, 31, 230, 0.12);
+    }
+    
+    /* Button Styles */
+    button {
+      background: linear-gradient(135deg, #bb1fe6, #5c33f6); /* Gradient background */
+      color: white;
+      border: none;
+      padding: 18px 32px;
+      border-radius: 20px; /* Rounded corners */
+      font-size: clamp(0.9rem, 2.5vw, 1rem);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth transitions */
+      font-family: 'Pretendard', sans-serif;
+      position: relative;
+      overflow: hidden;
+      min-width: 140px;
+    }
+    
+    /* Button Hover Effect (Shine) */
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); /* Shine effect */
+      transition: left 0.5s;
+    }
+    
+    button:hover::before {
+      left: 100%; /* Move shine across button */
+    }
+    
+    /* Button Hover State */
+    button:hover {
+      transform: translateY(-3px); /* Lift effect */
+      box-shadow: 0 12px 35px rgba(187, 31, 230, 0.35); /* Larger shadow */
+    }
+    
+    /* Secondary Button Style */
+    button.secondary {
+      background: rgba(240, 240, 240, 0.9); /* Lighter background */
+      color: #666;
+      font-weight: 500;
+    }
+    
+    /* Secondary Button Hover State */
+    button.secondary:hover {
+      background: rgba(220, 220, 220, 0.95);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+    
+    /* Button Row Layout */
+    .button-row {
+      display: flex;
+      margin: 24px 0 8px 0;
+      width: 100%;
+      justify-content: center;
+      gap: 16px; /* Space between buttons */
+    }
+    
+    /* Main Container for Bubbles */
+    .container {
+      position: relative; /* Keep relative for other elements, but bubbles will be fixed */
+      width: 100vw;
+      height: 100vh;
+      padding: 0;
+    }
+    
+    /* Bubble Styles */
+    .bubble {
+      position: fixed; /* Changed from absolute to fixed */
+      background: linear-gradient(135deg, #bb1fe6, #8e24aa); /* Default bubble gradient */
+      color: #fff;
+      padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 22px); /* Responsive padding */
+      border-radius: clamp(18px, 5vw, 24px); /* Responsive rounded corners */
+      font-size: clamp(0.85rem, 3vw, 1rem);
+      font-weight: 500;
+      max-width: clamp(180px, 45vw, 240px); /* Responsive max width */
+      line-height: 1.5;
+      cursor: grab; /* Grab cursor for draggable elements */
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth transitions */
+      user-select: none; /* Prevent text selection during drag */
+      touch-action: none; /* Disable default touch actions to prevent scrolling */
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(5px); /* Subtle blur for depth */
+      animation: bubbleIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Entry animation */
+      letter-spacing: -0.01em;
+      will-change: transform; /* Optimize for animation */
+      transform: translateZ(0); /* Force into a new compositing layer to prevent blur issues */
+      word-wrap: break-word; /* Ensure long words break */
+      word-break: break-word;
+    }
+    
+    /* Bubble Entry Animation Keyframes */
+    @keyframes bubbleIn {
+      0% { 
+        transform: scale(0) rotate(-10deg) translateZ(0); 
+        opacity: 0; 
+      }
+      50% {
+        transform: scale(1.1) rotate(5deg) translateZ(0);
+      }
+      100% { 
+        transform: scale(1) rotate(0deg) translateZ(0); 
+        opacity: 1; 
+      }
+    }
+    
+    /* Bubble Hover State */
+    .bubble:hover {
+      transform: translateY(-4px) scale(1.02) translateZ(0); /* Lift and slight scale */
+      box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+    
+    /* Bubble Active State (when clicked/tapped) */
+    .bubble:active {
+      cursor: grabbing; /* Grabbing cursor */
+    }
+    
+    /* Bubble Dragging State */
+    .bubble.dragging {
+      cursor: grabbing;
+      opacity: 0.95;
+      transform: scale(1.05) rotate(2deg) translateZ(0); /* Slightly larger and rotated */
+      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+      z-index: 10000 !important; /* Highest z-index when dragging */
+      transition: none; /* Disable transition during drag for responsiveness */
+    }
+    
+    /* Improved bubble dragging bounds for mobile (higher z-index) */
+    @media (max-width: 768px) {
+      .bubble.dragging {
+        z-index: 11000 !important; /* Even higher z-index on mobile to ensure it's above everything */
+      }
+    }
+    
+    /* Better touch handling for mobile devices (disable hover effects) */
+    @media (hover: none) and (pointer: coarse) {
+      .bubble:hover {
+        transform: none; /* No lift on hover for touch devices */
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+      
+      .bubble:active {
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      }
+    }
+
+    /* Bubble color variations with gradients */
+    .bubble[data-color="#bb1fe6"] {
+      background: linear-gradient(135deg, #bb1fe6, #8e24aa);
+    }
+    
+    .bubble[data-color="#5c33f6"] {
+      background: linear-gradient(135deg, #5c33f6, #3f51b5);
+    }
+    
+    .bubble[data-color="#ff4081"] {
+      background: linear-gradient(135deg, #ff4081, #e91e63);
+    }
+    
+    .bubble[data-color="#00bcd4"] {
+      background: linear-gradient(135deg, #00bcd4, #009688);
+    }
+    
+    .bubble[data-color="#4caf50"] {
+      background: linear-gradient(135deg, #4caf50, #388e3c);
+    }
+    
+    /* Ensure bubble content doesn't interfere with dragging */
+    .bubble-content {
+      pointer-events: none;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Header Styles */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      z-index: 900; /* Z-index for header, lower than dragging bubbles */
+      background: transparent; /* Changed to transparent */
+      pointer-events: none; /* Allow events to pass through header */
+      height: 80px;
+    }
+    
+    .header-right {
+      display: flex;
+      flex-direction: row; /* Ensures buttons are in a row by default */
+      align-items: center;
+      gap: 12px;
+      pointer-events: auto; /* Re-enable pointer events for buttons within header-right */
+    }
+    
+    .header button {
+      padding: 12px 20px;
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
+      margin: 0;
+      border-radius: 16px;
+      font-weight: 500;
+      pointer-events: auto; /* Explicitly ensure buttons are clickable */
+    }
+    
+    /* Download Button Specific Style */
+    .download-btn {
+      background: linear-gradient(135deg, #4caf50, #388e3c);
+    }
+    
+    .download-btn:hover {
+      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+    }
+
+    /* CommentManagement Button Specific Style */
+    .commentManage-btn {
+      background: linear-gradient(135deg, #2534ba, #1c50d3);
+    }
+    
+    .commentManage-btn:hover {
+      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+    }
+    
+    /* Add Bubble Button (FAB) */
+    .add-bubble {
+      position: fixed;
+      bottom: clamp(120px, 20vh, 140px); /* Responsive bottom position */
+      right: clamp(20px, 5vw, 30px); /* Responsive right position */
+      width: clamp(56px, 12vw, 64px); /* Responsive size */
+      height: clamp(56px, 12vw, 64px);
+      border-radius: 50%;
+      background: linear-gradient(45deg, #bb1fe6, #5c33f6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(24px, 6vw, 28px);
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(187, 31, 230, 0.4);
+      z-index: 1000; /* Above normal content */
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 3px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .add-bubble:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 10px 30px rgba(187, 31, 230, 0.6);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+    
+    .add-bubble:active {
+      transform: translateY(-2px) scale(0.95);
+    }
+    
+    /* Bottom Sheet Styles - Improved for desktop and mobile */
+    .bottom-sheet {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(30px);
+      border-radius: 24px 24px 0 0;
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.12);
+      z-index: 1100; /* Above add bubble button */
+      transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+      touch-action: pan-y; /* Allow vertical panning */
+    }
+    
+    /* Desktop specific adjustments for bottom sheet */
+    @media (min-width: 768px) {
+      .bottom-sheet {
+        transform: translateY(calc(100% - 80px)); /* Peek height for desktop */
+      }
+      
+      .bottom-sheet.active {
+        transform: translateY(0); /* Fully open on desktop */
+      }
+      
+      .bottom-sheet.peek {
+        transform: translateY(calc(100% - 80px));
+      }
+      
+      .bottom-sheet-peek-content {
+        height: 80px;
+        cursor: pointer;
+      }
+    }
+    
+    /* Mobile specific adjustments for bottom sheet */
+    @media (max-width: 767px) {
+      .bottom-sheet {
+        transform: translateY(calc(100% - 60px)); /* Peek height for mobile */
+      }
+      
+      .bottom-sheet.active {
+        transform: translateY(0); /* Fully open on mobile */
+      }
+      
+      .bottom-sheet.peek {
+        transform: translateY(calc(100% - 60px));
+      }
+      
+      .bottom-sheet-peek-content {
+        height: 60px;
+      }
+    }
+    
+    .bottom-sheet-handle {
+      width: 48px;
+      height: 4px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 2px;
+      margin: 12px auto 20px;
+      cursor: grab; /* Grab cursor for handle */
+      transition: background-color 0.3s;
+    }
+    
+    .bottom-sheet-handle:hover {
+      background: rgba(0, 0, 0, 0.5);
+    }
+    
+    .bottom-sheet-peek-content {
+      padding: 0 24px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    
+    .bottom-sheet-peek-text {
+      color: #666;
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
+      font-weight: 500;
+    }
+    
+    .bottom-sheet-content {
+      padding: 0 24px 32px;
+      text-align: center;
+    }
+    
+    /* Share Link Display */
+    .share-link {
+      padding: 16px 20px;
+      background: rgba(248, 248, 248, 0.9);
+      border-radius: 16px;
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
+      font-family: 'Monaco', 'Menlo', monospace; /* Monospaced font for links */
+      margin: 16px 0;
+      word-break: break-all;
+      text-align: center;
+      border: 1px solid rgba(187, 31, 230, 0.1);
+    }
+    
+    /* Share Options Button Row */
+    .share-options {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+    
+    .share-btn {
+      flex: 1;
+      max-width: 140px;
+      padding: 14px 20px;
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
+      border-radius: 16px;
+    }
+    
+    /* Instagram Share Button Specific Style */
+    .instagram-btn {
+      background: linear-gradient(135deg, #E4405F, #C13584);
+    }
+    
+    .instagram-btn:hover {
+      box-shadow: 0 8px 25px rgba(228, 64, 95, 0.4);
+    }
+    
+    /* Comment Form Styles */
+    .comment-form {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(30px);
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.15);
+      border-radius: 24px 24px 0 0;
+      z-index: 1200; /* Above bottom sheet */
+      transform: translateY(100%); /* Hidden by default */
+      transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 24px; /* Ensure padding is here */
+    }
+    
+    .comment-form.active {
+      transform: translateY(0); /* Show form */
+    }
+    
+    .comment-form h2 {
+      font-size: clamp(1.2rem, 3vw, 1.4rem);
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    
+    /* Textarea Styles */
+    textarea {
+      width: 100%;
+      padding: 18px 20px;
+      border: none;
+      background: rgba(248, 248, 248, 0.9);
+      border-radius: 16px;
+      font-size: clamp(0.9rem, 2.5vw, 1rem);
+      font-family: 'Pretendard', sans-serif;
+      resize: none; /* Disable manual resize */
+      height: 100px;
+      margin-bottom: 18px;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+    }
+    
+    /* Textarea Focus State */
+    textarea:focus {
+      outline: none;
+      border: 2px solid #bb1fe6;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 4px 12px rgba(187, 31, 230, 0.15);
+    }
+    
+    /* Color Options for Bubbles */
+    .color-options {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      gap: clamp(8px, 3vw, 12px);
+    }
+    
+    .color-option {
+      width: clamp(32px, 8vw, 36px);
+      height: clamp(32px, 8vw, 36px);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 3px solid transparent; /* Transparent border for selection */
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Color Option Hover Effect (Inner Glow) */
+    .color-option::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: all 0.3s;
+    }
+    
+    .color-option:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .color-option:hover::before {
+      width: 100%;
+      height: 100%;
+    }
+    
+    /* Selected Color Option State */
+    .color-option.selected {
+      border: 3px solid #333; /* Darker border for selected */
+      transform: scale(1.15);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    }
+    
+    /* Specific Color Option Backgrounds */
+    .color-options .color-1 { background: linear-gradient(135deg, #bb1fe6, #8e24aa); }
+    .color-options .color-2 { background: linear-gradient(135deg, #5c33f6, #3f51b5); }
+    .color-options .color-3 { background: linear-gradient(135deg, #ff4081, #e91e63); }
+    .color-options .color-4 { background: linear-gradient(135deg, #00bcd4, #009688); }
+    .color-options .color-5 { background: linear-gradient(135deg, #4caf50, #388e3c); }
+    
+    /* Dim Overlay for Modals/Forms */
+    .dim-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000; /* Below modals, above screens */
+      opacity: 0;
+      pointer-events: none; /* Allow clicks through when hidden */
+      transition: all 0.3s;
+    }
+    
+    .dim-overlay.active {
+      opacity: 1;
+      pointer-events: all; /* Block clicks when active */
+    }
+    
+    /* Success Message Modal */
+    .success-message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8); /* Initial smaller scale */
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(30px);
+      padding: 36px;
+      border-radius: 24px;
+      text-align: center;
+      z-index: 1300; /* Highest z-index */
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Springy animation */
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      display: none; /* Hidden by default, controlled by JS */
+    }
+    
+    .success-message.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translate(-50%, -50%) scale(1); /* Full size when active */
+      display: block; /* Show when active */
+    }
+    
+    .success-message h2 {
+      background: linear-gradient(45deg, #bb1fe6, #5c33f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+      font-size: clamp(1.2rem, 3vw, 1.4rem);
+    }
+
+    /* Generic Message Modal (for alerts/confirmations) */
+    .message-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(30px);
+      padding: 32px;
+      border-radius: 24px;
+      text-align: center;
+      z-index: 1300;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      min-width: min(320px, 90vw);
+      max-width: 90vw;
+      display: none;
+    }
+
+    .message-modal.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translate(-50%, -50%) scale(1);
+      display: block;
+    }
+
+    .message-modal h2 {
+      background: linear-gradient(45deg, #ff4081, #e91e63); /* Reddish gradient for messages */
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      font-size: clamp(1.2rem, 3vw, 1.4rem);
+    }
+
+    .message-modal .button-row {
+      margin-top: 24px;
+    }
+    
+    /* Empty State Message */
+    .empty-state {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: #999;
+      width: 80%;
+      display: none; /* Hidden by default, controlled by JS */
+    }
+    
+    .empty-state h2 {
+      font-size: clamp(1.1rem, 3vw, 1.3rem);
+      margin-bottom: 12px;
+      color: #bbb;
+    }
+    
+    .empty-state p {
+      margin: 12px 0;
+      font-size: clamp(0.9rem, 2.5vw, 1rem);
+      color: #ccc;
+    }
+    
+    /* Instructions Overlay */
+    .instructions {
+      position: fixed;
+      top: clamp(90px, 15vh, 120px); /* Adjusted to be below header */
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(15px);
+      padding: 12px 20px;
+      border-radius: 16px;
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
+      color: #666;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      pointer-events: none; /* Allow clicks through */
+      opacity: 0;
+      transition: all 0.3s;
+      text-align: center;
+      z-index: 950; /* Between header and bubbles */
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      max-width: 90vw;
+    }
+    
+    .instructions.show {
+      opacity: 1;
+      animation: instructionPulse 3s ease-in-out;
+    }
+    
+    @keyframes instructionPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    
+    /* Character Counter for Textarea */
+    .char-counter {
+      position: absolute;
+      bottom: 8px;
+      right: 12px;
+      font-size: clamp(0.7rem, 2vw, 0.8rem);
+      color: #999;
+      pointer-events: none;
+    }
+    
+    .char-counter.warning {
+      color: #ff4081; /* Warning color when near limit */
+    }
+    
+    /* Download Modal */
+    .download-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(30px);
+      padding: 32px;
+      border-radius: 24px;
+      text-align: center;
+      z-index: 1300;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      min-width: min(320px, 90vw);
+      max-width: 90vw;
+    }
+    
+    .download-modal.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    
+    .download-modal h2 {
+      background: linear-gradient(45deg, #4caf50, #388e3c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      font-size: clamp(1.2rem, 3vw, 1.4rem);
+    }
+    
+    .download-options {
+      display: flex;
+      gap: 16px;
+      margin: 24px 0;
+    }
+    
+    .download-option {
+      flex: 1;
+      padding: 20px 16px;
+      background: rgba(248, 248, 248, 0.9);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+    }
+    
+    .download-option:hover {
+      background: rgba(76, 175, 80, 0.1);
+      border-color: #4caf50;
+      transform: translateY(-2px);
+    }
+    
+    .download-option h3 {
+      font-size: clamp(1rem, 2.5vw, 1.1rem);
+      margin-bottom: 8px;
+      color: #333;
+    }
+    
+    .download-option p {
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
+      color: #666;
+      margin: 0;
+    }
+    
+    /* Progress indicator for downloads */
+    .progress-indicator {
+      width: 100%;
+      height: 4px;
+      background: rgba(76, 175, 80, 0.2);
+      border-radius: 2px;
+      margin: 16px 0;
+      overflow: hidden;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #4caf50, #388e3c);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    
+    /* Comment Management Table Styles */
+    #comment-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+    #comment-table th, #comment-table td {
+        padding: 12px 16px;
+        border-bottom: 1px solid #eee;
+        vertical-align: middle;
+    }
+    #comment-table th {
+        font-weight: 600;
+        color: #555;
+    }
+    #comment-table td:first-child {
+        word-break: break-all;
+        color: #333;
+    }
+    .status-btn {
+        padding: 6px 12px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        min-width: 60px;
+    }
+    .status-btn.approved {
+        background: linear-gradient(135deg, #4caf50, #388e3c);
+    }
+    .status-btn.rejected {
+        background: linear-gradient(135deg, #ff4081, #e91e63);
+    }
+
+    /* Responsive improvements for smaller screens */
+    @media (max-width: 768px) {
+      /* Rule to adjust header ONLY on mobile */
+      .header {
+        height: auto;
+        align-items: flex-start;
+      }
+
+      .welcome-container {
+        margin: 20px;
+        padding: 40px 32px;
+      }
+      
+      .button-row {
+        flex-direction: column;
+        gap: 12px;
+      }
+      
+      button {
+        margin: 4px 0;
+      }
+      
+      /* Rule to stack buttons ONLY on mobile */
+      .header-right {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+      }
+      
+      .download-options {
+        flex-direction: column;
+        gap: 12px;
+      }
+      
+      .share-options {
+        flex-direction: column;
+      }
+      
+      .share-btn {
+        max-width: none;
+      }
+      
+      .container {
+        padding-top: 0; /* No padding needed if bubbles are fixed */
+      }
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+
+</head>
+<body>
+  <div class="screen" id="welcome-screen">
+    <div class="welcome-container">
+      <h1>롤링 페이퍼</h1>
+      <p>친구들에게 익명 메시지를 받을 수 있는<br>나만의 페이지를 만들어보세요 ✨</p>
+      <div class="button-row">
+        <button onclick="showScreen('login-screen')">로그인</button>
+        <button class="secondary" onclick="showScreen('create-screen')">새로 만들기</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="screen hidden" id="login-screen">
+    <div class="welcome-container">
+      <h1>로그인</h1>
+      <p>이름과 비밀번호를 입력하여<br>내 롤링 페이퍼를 확인하세요</p>
+      <input type="text" id="login-name" placeholder="이름을 입력하세요">
+      <input type="password" id="login-password" placeholder="비밀번호를 입력하세요">
+      <div class="button-row">
+        <button onclick="login()">로그인</button>
+        <button class="secondary" onclick="showScreen('welcome-screen')">뒤로</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="screen hidden" id="create-screen">
+    <div class="welcome-container">
+      <h1>새 페이지 만들기</h1>
+      <p>나만의 롤링 페이퍼 페이지를<br>만들어볼까요? 🎉</p>
+      <input type="text" id="create-name" placeholder="이름을 입력하세요">
+      <input type="password" id="create-password" placeholder="비밀번호를 설정하세요">
+      <div class="button-row">
+        <button onclick="createPaper()">만들기</button>
+        <button class="secondary" onclick="showScreen('welcome-screen')">뒤로</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="screen hidden" id="view-screen">
+    <div class="header">
+      <span></span> 
+      <div class="header-right" id="owner-controls">
+        <button class="commentManage-btn" onclick="commentManage()">댓글 관리</button>
+        <button class="download-btn" onclick="showDownloadModal()">📥 다운로드</button>
+        <button onclick="logout()">로그아웃</button>
+      </div>
+    </div>
+    
+    <div class="instructions" id="view-instructions">
+      💡 메시지를 드래그하여 위치를 조정할 수 있어요
+    </div>
+    
+    <div class="container" id="bubbles-container"></div>
+    
+    <div class="empty-state" id="empty-state-owner">
+      <h2>아직 메시지가 없어요 💭</h2>
+      <p>아래 공유 버튼을 눌러 친구들에게 링크를 공유해보세요!</p>
+    </div>
+    
+    <div class="bottom-sheet peek" id="share-sheet">
+      <div class="bottom-sheet-handle" role="button" aria-label="Toggle share sheet" tabindex="0"></div>
+      <div class="bottom-sheet-peek-content" role="button" aria-label="Open share options" tabindex="0">
+        <div class="bottom-sheet-peek-text">👆 친구들에게 공유하기</div>
+      </div>
+      <div class="bottom-sheet-content">
+        <p><strong id="owner-name">홍길동</strong>님의 롤링 페이퍼입니다 ✨</p>
+        <p>친구들에게 공유하세요:</p>
+        <div class="share-link" id="share-link">rolling-paper.com/p/abc123</div>
+        <div class="share-options">
+          <button class="share-btn" onclick="copyLink()">📋 링크 복사</button>
+          <button class="share-btn instagram-btn" onclick="shareToInstagram()">📷 인스타그램</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="screen hidden" id="comment-screen">
+    <div class="header" id="commenter-header" style="display: none;">
+        <span></span>
+        <div class="header-right">
+            <button onclick="goToWelcomeScreen()">나만의 롤링페이퍼 만들러 가기!</button>
+        </div>
+    </div>
+
+    <div class="instructions" id="comment-instructions">
+      💡 메시지를 드래그하여 위치를 조정할 수 있어요
+    </div>
+    
+    <div class="container" id="comment-bubbles-container"></div>
+
+    <div class="empty-state" id="empty-state-commenter">
+      <h2>아직 메시지가 없어요 💭</h2>
+      <p>첫 번째 메시지를 남겨보세요!</p>
+    </div>
+    
+    <div class="add-bubble" onclick="showCommentForm()">+</div>
+  </div>
+
+  <div class="screen hidden" id="comment-management-screen">
+    <div class="welcome-container">
+      <h1>댓글 관리</h1>
+      <p>댓글의 상태를 변경할 수 있습니다.<br>거절된 댓글은 메인 화면에 표시되지 않습니다.</p>
+      <div style="max-height: 40vh; overflow-y: auto; margin: 20px 0;">
+        <table id="comment-table">
+          <thead>
+            <tr>
+              <th>댓글 내용</th>
+              <th style="text-align: center; width: 90px;">상태</th>
+            </tr>
+          </thead>
+          <tbody id="comment-table-body">
+            </tbody>
+        </table>
+      </div>
+      <div class="button-row">
+        <button class="secondary" onclick="goBackToViewScreen()">돌아가기</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="comment-form" id="comment-form">
+    <h2>익명 메시지 남기기 💝</h2>
+    <p>한 문장으로 솔직한 마음을 표현해보세요.</p>
+    <div style="position: relative;">
+      <textarea id="comment-text" maxlength="100" placeholder="메시지를 입력하세요 (최대 100자)" oninput="updateCharCounter()"></textarea>
+      <div class="char-counter" id="char-counter">0/100</div>
+    </div>
+    
+    <div class="color-options">
+      <div class="color-option color-1 selected" data-color="#bb1fe6" onclick="selectColor(this)" role="radio" aria-checked="true" tabindex="0"></div>
+      <div class="color-option color-2" data-color="#5c33f6" onclick="selectColor(this)" role="radio" aria-checked="false" tabindex="0"></div>
+      <div class="color-option color-3" data-color="#ff4081" onclick="selectColor(this)" role="radio" aria-checked="false" tabindex="0"></div>
+      <div class="color-option color-4" data-color="#00bcd4" onclick="selectColor(this)" role="radio" aria-checked="false" tabindex="0"></div>
+      <div class="color-option color-5" data-color="#4caf50" onclick="selectColor(this)" role="radio" aria-checked="false" tabindex="0"></div>
+    </div>
+    
+    <div class="button-row">
+      <button onclick="submitComment()">💌 보내기</button>
+      <button class="secondary" id="cancel-comment-btn" onclick="hideCommentForm()">취소</button>
+    </div>
+  </div>
+
+  <div class="dim-overlay" id="overlay" onclick="hideOverlay()"></div>
+  
+  <div class="success-message" id="success-message">
+    <h2>메시지 전송 완료! 🎉</h2>
+    <p>소중한 메시지가 전달되었어요.</p>
+    <button onclick="hideSuccessMessage()">확인</button>
+  </div>
+
+  <div class="message-modal" id="message-modal">
+    <h2 id="message-modal-title"></h2>
+    <p id="message-modal-content"></p>
+    <div class="button-row">
+      <button onclick="hideMessageModal()">확인</button>
+    </div>
+  </div>
+  
+  <div class="download-modal" id="download-modal">
+    <h2>다운로드 옵션 📥</h2>
+    <p>원하는 형식을 선택하세요</p>
+    
+    <div class="download-options">
+      <div class="download-option" onclick="downloadAsImage()">
+        <h3>🖼️ 이미지</h3>
+        <p>현재 상태 스크린샷</p>
+      </div>
+      <div class="download-option" onclick="downloadAsVideo()">
+        <h3>🎬 애니메이션 이미지</h3>
+        <p>버블 등장 효과 이미지</p>
+      </div>
+    </div>
+    
+    <div class="progress-indicator" id="progress-indicator" style="display: none;">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    
+    <div class="button-row">
+      <button class="secondary" onclick="hideDownloadModal()">취소</button>
+    </div>
+  </div>
+  
+  <script>
+    const supabaseUrl = 'https://oralhirhnmohctgsmmnv.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yYWxoaXJobm1vaGN0Z3NtbW52Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1Mjc3NDAsImV4cCI6MjA2NTEwMzc0MH0.bIVH9UcGlDzGlC34vUCLWGRnAe_Z3AovGrdRtT5OxFs';
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+    // Global variables for application state
+    let currentUser = null; // Stores the currently logged-in user's data
+    let isOwnerView = false; // Distinguishes between owner and commenter/viewer
+    let selectedColor = "#bb1fe6"; // Default color for new bubbles
+    let topZ = 100; // Base z-index for bubbles, incremented to bring active bubble to front
+    let activeBubble = null; // Reference to the bubble currently being dragged
+    let offsetX, offsetY; // Offset of mouse/touch from bubble's top-left for smooth dragging
+    let isDragging = false; // Flag to indicate if a bubble is being dragged
+    let dragThrottled = false; // Flag for throttling drag events for performance
+    
+    // Sample users data (simulating a database for demonstration purposes)
+    //const users = [
+    //  {
+    //    name: "홍길동",
+    //    password: "1234",
+    //    id: "abc123",
+    //    comments: [
+    //      { text: "아니 근데 진짜 잘생겼더라;;", color: "#bb1fe6", x: 20, y: 30, status: 'approved' },
+    //      { text: "걍 볼때마다 존멋이야", color: "#bb1fe6", x: 60, y: 20, status: 'approved' },
+    //      { text: "와 이건 못참지 ㅋㅋ", color: "#ff4081", x: 40, y: 70, status: 'approved' },
+    //      { text: "와 1", color: "#ff4081", status: 'approved' },
+    //      { text: "와 2", color: "#ff4081", status: 'approved' },
+    //      { text: "와 3", color: "#ff4081", status: 'approved' },
+    //      { text: "와 4", color: "#ff4081", status: 'approved' },
+    //      { text: "다음 학기에도 제발 같은 반 가자", color: "#00bcd4", x: 75, y: 45, status: 'approved' }
+    //    ]
+    //  }
+    //];
+
+    
+    /**
+     * Helper to get comments that should be visible.
+     * @param {Array<Object>} commentsArray - The array of comments to filter.
+     * @returns {Array<Object>} An array of comments with 'approved' status.
+     */
+    function getVisibleComments(commentsArray) {
+        if (!commentsArray) return [];
+        return commentsArray.filter(c => c.status === 'approved');
+    }
+
+    async function loadCommenterPage(paperId) {
+        const { data, error } = await supabaseClient
+            .from('comments')
+            .select('*')
+            .eq('paper_id', paperId);
+
+        if (error) {
+            showMessageModal('오류', '댓글을 불러오는 데 실패했습니다.');
+            return;
+        }
+
+        const visibleComments = getVisibleComments(data);
+        // We need to map database columns (x_pos, y_pos) to bubble properties (x, y)
+        const formattedComments = visibleComments.map(c => ({...c, x: c.x_pos, y: c.y_pos}));
+        renderBubbles(formattedComments, 'comment-bubbles-container', 'empty-state-commenter');
+
+        // Update UI based on whether the user has commented
+        if (hasCommented(paperId)) {
+            document.querySelector('.add-bubble').style.display = 'none';
+            document.getElementById('commenter-header').style.display = 'flex';
+        }
+    }
+
+    /**
+     * Displays a specific screen and handles view-specific logic like fetching data.
+     * @param {string} screenId - The ID of the screen to display.
+     */
+    function showScreen(screenId) {
+      // Hide all screens first
+      document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.add('hidden');
+      });
+      // Show the target screen
+      document.getElementById(screenId).classList.remove('hidden');
+
+      // Update UI elements based on owner/commenter status
+      updateUIForUserType();
+
+      // --- Logic for Owner's View ('view-screen') ---
+      if (screenId === 'view-screen' && currentUser) {
+        // The currentUser object, including comments, should have been loaded by the login() function.
+        const visibleComments = getVisibleComments(currentUser.comments);
+        
+        // Map database column names (e.g., x_pos) to the format renderBubbles expects (e.g., x)
+        const formattedComments = visibleComments.map(c => ({...c, x: c.x_pos, y: c.y_pos}));
+        
+        renderBubbles(formattedComments, 'bubbles-container', 'empty-state-owner');
+
+        document.getElementById('owner-name').textContent = currentUser.name;
+        const url = `${window.location.origin}${window.location.pathname}?id=${currentUser.id}`;
+        document.getElementById('share-link').textContent = url;
+
+        if (formattedComments.length > 0) {
+          const instructions = document.getElementById('view-instructions');
+          instructions.classList.add('show');
+          setTimeout(() => instructions.classList.remove('show'), 3000);
+        }
+        
+        setTimeout(() => {
+          const shareSheet = document.getElementById('share-sheet');
+          shareSheet.classList.add('peek');
+          shareSheet.classList.remove('active');
+        }, 500);
+      }
+
+      // --- Logic for Commenter's View ('comment-screen') ---
+      if (screenId === 'comment-screen') {
+        const paperId = getUrlParam('id');
+        if (!paperId) {
+          // If a user somehow gets here without an ID, send them to the welcome screen.
+          showScreen('welcome-screen');
+          return;
+        }
+
+        const bubbleContainer = document.getElementById('comment-bubbles-container');
+        
+        if (hasCommented(paperId)) {
+          // If this user has already commented, show the bubbles container...
+          bubbleContainer.style.display = 'block';
+          hideCommentForm();
+          // ...and load the comments from the database.
+          loadCommenterPage(paperId);
+        } else {
+          // If this is a new commenter, hide the bubbles container...
+          bubbleContainer.style.display = 'none';
+          // ...and show them the comment form immediately.
+          showCommentForm(true);
+        }
+      }
+    }
+    /**
+     * Controls UI elements visibility based on whether the user is an owner or commenter.
+     */
+    function updateUIForUserType() {
+        const ownerControls = document.getElementById('owner-controls');
+        const shareSheet = document.getElementById('share-sheet');
+
+        if (isOwnerView) {
+            ownerControls.style.display = 'flex';
+            shareSheet.style.display = 'block';
+        } else {
+            ownerControls.style.display = 'none';
+            shareSheet.style.display = 'none';
+        }
+    }
+    
+    /**
+     * Updates the character counter for the comment textarea.
+     */
+    function updateCharCounter() {
+      const textarea = document.getElementById('comment-text');
+      const counter = document.getElementById('char-counter');
+      const length = textarea.value.length;
+      counter.textContent = `${length}/100`;
+      counter.classList.toggle('warning', length > 80);
+    }
+    
+    /**
+     * Checks if the current user (device) has already commented on the current paper.
+     * @returns {boolean} True if commented, false otherwise.
+     */
+    const hasCommented = (paperId) => {
+      if (!paperId) return false;
+      return localStorage.getItem(`commented_${paperId}`) === 'true';
+    };
+    
+    /**
+     * Marks the current user (device) as having commented on a specific paper.
+     * @param {string} paperId - The ID of the rolling paper.
+     */
+    const markAsCommented = (paperId) => {
+      localStorage.setItem(`commented_${paperId}`, 'true');
+    };
+    
+    /**
+     * Retrieves a URL parameter by name.
+     * @param {string} param - The name of the URL parameter.
+     * @returns {string|null} The value of the parameter, or null if not found.
+     */
+    function getUrlParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+    
+    /**
+     * Handles user login.
+     */
+    async function login() {
+      const name = document.getElementById('login-name').value;
+      const password = document.getElementById('login-password').value;
+
+      if (!name || !password) {
+        showMessageModal('로그인 오류', '이름과 비밀번호를 입력해주세요.');
+        return;
+      }
+
+      // Query Supabase for a matching paper
+      const { data, error } = await supabaseClient
+        .from('papers')
+        .select('*')
+        .eq('name', name)
+        .eq('password', password)
+        .single(); // .single() expects only one result
+
+      if (error || !data) {
+        showMessageModal('로그인 실패', '이름 또는 비밀번호가 일치하지 않습니다.');
+      } else {
+        // Successfully found the user. Fetch their comments.
+        const { data: commentsData, error: commentsError } = await supabaseClient
+          .from('comments')
+          .select('*')
+          .eq('paper_id', data.id);
+
+        currentUser = data;
+        currentUser.comments = commentsData || []; // Attach comments to the user object
+        isOwnerView = true;
+        showScreen('view-screen');
+      }
+    }
+    
+    /**
+     * Creates a new rolling paper for a user.
+     */
+    async function createPaper() {
+      const name = document.getElementById('create-name').value;
+      const password = document.getElementById('create-password').value;
+
+      if (!name || !password) {
+        showMessageModal('생성 오류', '이름과 비밀번호를 입력해주세요.');
+        return;
+      }
+
+      // Insert a new row into the 'papers' table
+      const { data, error } = await supabaseClient
+        .from('papers')
+        .insert([
+          { name: name, password: password },
+        ])
+        .select()
+        .single();
+
+      if (error) {
+        if (error.message.includes('unique constraint')) {
+          showMessageModal('생성 오류', '이미 존재하는 이름입니다. 다른 이름을 사용해주세요.');
+        } else {
+          showMessageModal('생성 오류', '페이지를 만드는 데 실패했습니다.');
+        }
+      } else {
+        currentUser = data;
+        currentUser.comments = []; // New paper has no comments yet
+        isOwnerView = true;
+        showScreen('view-screen');
+      }
+    }
+    /**
+     * Logs out the current user and returns to the welcome screen.
+     */
+    function logout() {
+      currentUser = null;
+      isOwnerView = false;
+      const shareSheet = document.getElementById('share-sheet');
+      shareSheet.classList.remove('active', 'peek');
+      // Navigate to the clean welcome screen
+      window.location.href = window.location.pathname;
+    }
+    
+    function goToWelcomeScreen() {
+        window.location.href = window.location.pathname;
+    }
+
+    /**
+     * Renders comment bubbles in a specified container.
+     */
+    function renderBubbles(comments, containerId, emptyStateId) {
+      const container = document.getElementById(containerId);
+      const emptyState = document.getElementById(emptyStateId);
+      container.innerHTML = '';
+      
+      if (!comments || comments.length === 0) {
+        emptyState.style.display = 'block';
+        return;
+      }
+      emptyState.style.display = 'none';
+      
+      comments.forEach((comment, i) => {
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.dataset.index = i; // This might be brittle if comments are not always the full list.
+        bubble.dataset.id = comment.id; // Use the real database ID
+        bubble.dataset.color = comment.color || '#bb1fe6';
+        
+        const bubbleContent = document.createElement('div');
+        bubbleContent.className = 'bubble-content';
+        bubbleContent.textContent = comment.text;
+        bubble.appendChild(bubbleContent);
+        
+        let x = comment.x || (Math.random() * 80 + 5);
+        let y = comment.y || (Math.random() * 80 + 5);
+        comment.x = x;
+        comment.y = y;
+        
+        bubble.style.left = `${x}vw`;
+        bubble.style.top = `${y}vh`;
+        bubble.style.zIndex = 100 + i;
+        
+        bubble.addEventListener('mousedown', startDrag, { passive: false });
+        bubble.addEventListener('touchstart', startDrag, { passive: false });
+        
+        setTimeout(() => container.appendChild(bubble), i * 150);
+      });
+    }
+
+    /**
+     * Shows the comment management screen and populates the table.
+     */
+    function commentManage() {
+        renderManagementTable();
+        showScreen('comment-management-screen');
+    }
+
+    /**
+     * Renders the table of comments for the management screen.
+     */
+    function renderManagementTable() {
+        const tableBody = document.getElementById('comment-table-body');
+        tableBody.innerHTML = '';
+
+        if (!currentUser || currentUser.comments.length === 0) {
+            const row = tableBody.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = 2;
+            cell.textContent = '표시할 댓글이 없습니다.';
+            cell.style.textAlign = 'center';
+            cell.style.padding = '20px';
+            return;
+        }
+
+        currentUser.comments.forEach((comment) => {
+            const row = tableBody.insertRow();
+            const textCell = row.insertCell();
+            const statusCell = row.insertCell();
+
+            textCell.textContent = comment.text;
+            statusCell.style.textAlign = 'center';
+
+            const statusBtn = document.createElement('button');
+            statusBtn.className = 'status-btn';
+            statusBtn.classList.add(comment.status);
+            statusBtn.textContent = comment.status === 'approved' ? '승인' : '거절';
+            statusBtn.onclick = () => toggleCommentStatus(comment.id, comment.status);
+            
+            statusCell.appendChild(statusBtn);
+        });
+    }
+
+    /**
+     * Toggles the status of a comment between 'approved' and 'rejected'.
+     * @param {number} index - The index of the comment in the user's comment array.
+     */
+    async function toggleCommentStatus(commentId, currentStatus) {
+        const newStatus = currentStatus === 'approved' ? 'rejected' : 'approved';
+
+        // Update the status in the Supabase database
+        const { error } = await supabaseClient
+            .from('comments')
+            .update({ status: newStatus })
+            .eq('id', commentId);
+
+        if (error) {
+            showMessageModal('오류', '상태를 변경하는 데 실패했습니다.');
+            return;
+        }
+
+        // Find the comment in the local currentUser array and update it
+        const commentToUpdate = currentUser.comments.find(c => c.id === commentId);
+        if (commentToUpdate) {
+            commentToUpdate.status = newStatus;
+        }
+
+        // Re-render the management table and the main bubble view
+        renderManagementTable();
+        showScreen('view-screen');
+    }
+
+    /**
+     * Navigates back to the main view screen from the management screen.
+     */
+    function goBackToViewScreen() {
+        showScreen('view-screen');
+    }
+    
+    // Drag and Drop functions (startDrag, throttledDrag, drag, endDrag) remain largely the same.
+    // ... (Your existing drag functions are good, no changes needed here)
+    function startDrag(e) { e.preventDefault(); e.stopPropagation(); topZ += 1; this.style.zIndex = topZ; activeBubble = this; activeBubble.classList.add('dragging'); const rect = activeBubble.getBoundingClientRect(); const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX; const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY; offsetX = clientX - rect.left; offsetY = clientY - rect.top; isDragging = true; document.addEventListener('mousemove', throttledDrag, { passive: false }); document.addEventListener('touchmove', throttledDrag, { passive: false }); document.addEventListener('mouseup', endDrag, { passive: false }); document.addEventListener('touchend', endDrag, { passive: false }); }
+    function throttledDrag(e) { if (!isDragging || !activeBubble || dragThrottled) return; dragThrottled = true; requestAnimationFrame(() => { drag(e); dragThrottled = false; }); }
+    // This function doesn't need changes, but is required for context.
+    function drag(e) { if (!isDragging || !activeBubble) return; e.preventDefault(); const bubbleRect = activeBubble.getBoundingClientRect(); const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX; const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY; let newX_px = clientX - offsetX; let newY_px = clientY - offsetY; const paddingPx = window.innerWidth <= 768 ? 10 : 20; newX_px = Math.max(paddingPx, Math.min(newX_px, window.innerWidth - bubbleRect.width - paddingPx)); newY_px = Math.max(paddingPx, Math.min(newY_px, window.innerHeight - bubbleRect.height - paddingPx)); const xVw = (newX_px / window.innerWidth) * 100; const yVh = (newY_px / window.innerHeight) * 100; activeBubble.style.left = `${xVw}vw`; activeBubble.style.top = `${yVh}vh`; }
+    // Replace your endDrag function with this async version.
+    async function endDrag(e) {
+      if (!isDragging) return;
+      
+      if (activeBubble) {
+        // Get the final position from the style attribute
+        const finalX = parseFloat(activeBubble.style.left);
+        const finalY = parseFloat(activeBubble.style.top);
+        const commentId = activeBubble.dataset.id; // We need to add data-id to the bubbles
+
+        if (commentId && isOwnerView) {
+            // Update the position in the Supabase database
+            console.log(`Saving new position for comment ${commentId}: (${finalX}, ${finalY})`);
+            await supabaseClient
+                .from('comments')
+                .update({ x_pos: finalX, y_pos: finalY })
+                .eq('id', commentId);
+        }
+        activeBubble.classList.remove('dragging');
+        activeBubble = null;
+      }
+      
+      isDragging = false;
+      dragThrottled = false;
+      document.removeEventListener('mousemove', throttledDrag);
+      document.removeEventListener('touchmove', throttledDrag);
+      document.removeEventListener('mouseup', endDrag);
+      document.removeEventListener('touchend', endDrag);
+    }
+    
+    /**
+     * Copies the share link to the clipboard.
+     */
+    function copyLink() {
+      const linkText = document.getElementById('share-link').textContent;
+      navigator.clipboard.writeText(linkText).then(() => {
+        showMessageModal('링크 복사', '링크가 복사되었습니다! 🎉');
+      }).catch(err => {
+        showMessageModal('복사 실패', '링크 복사에 실패했습니다.');
+      });
+    }
+    
+    /**
+     * Simulates sharing to Instagram.
+     */
+    function shareToInstagram() {
+        showMessageModal('공유 기능', '인스타그램 공유는 현재 지원되지 않습니다. 링크를 복사하여 사용해주세요.');
+    }
+    
+    /**
+     * Shows the comment form modal.
+     * @param {boolean} isFirstComment - If true, hide the cancel button.
+     */
+     function showCommentForm(isFirstComment = false) {
+      document.getElementById('comment-form').classList.add('active');
+      document.getElementById('overlay').classList.add('active');
+      
+      // Hide the cancel button if the user MUST comment to proceed.
+      const cancelBtn = document.getElementById('cancel-comment-btn');
+      if (isFirstComment) {
+        cancelBtn.style.display = 'none';
+      } else {
+        cancelBtn.style.display = 'inline-block';
+      }
+
+      setTimeout(() => document.getElementById('comment-text').focus(), 300);
+    }
+    
+    /**
+     * Hides the comment form modal and clears its content.
+     */
+    function hideCommentForm() {
+      document.getElementById('comment-form').classList.remove('active');
+      document.getElementById('overlay').classList.remove('active');
+      document.getElementById('comment-text').value = '';
+      updateCharCounter();
+    }
+    
+    /**
+     * Toggles the share bottom sheet between 'peek' and 'active' states.
+     */
+    function toggleShareSheet() {
+      const shareSheet = document.getElementById('share-sheet');
+      shareSheet.classList.toggle('active');
+      shareSheet.classList.toggle('peek');
+    }
+    
+    /**
+     * Hides the global overlay and any active modals/forms.
+     */
+    function hideOverlay() {
+      hideCommentForm();
+      hideDownloadModal();
+      hideSuccessMessage();
+      hideMessageModal();
+      
+      const shareSheet = document.getElementById('share-sheet');
+      shareSheet.classList.remove('active');
+      shareSheet.classList.add('peek');
+    }
+    
+    /**
+     * Selects a color option for the bubble.
+     */
+    function selectColor(element) {
+      document.querySelectorAll('.color-option').forEach(option => {
+        option.classList.remove('selected');
+        option.setAttribute('aria-checked', 'false');
+      });
+      element.classList.add('selected');
+      element.setAttribute('aria-checked', 'true');
+      selectedColor = element.getAttribute('data-color');
+    }
+    
+    /**
+     * Submits a new comment to the rolling paper.
+     */
+    async function submitComment() {
+      const commentText = document.getElementById('comment-text').value.trim();
+      const urlParams = new URLSearchParams(window.location.search);
+      const paperId = urlParams.get('id');
+
+      if (!commentText) {
+        showMessageModal('메시지 오류', '메시지를 입력해주세요.');
+        return;
+      }
+
+      if (hasCommented(paperId)) {
+        showMessageModal('중복 메시지', '이미 메시지를 작성하셨습니다.');
+        return;
+      }
+
+      const newComment = {
+          paper_id: paperId,
+          text: commentText,
+          color: selectedColor,
+          x_pos: Math.random() * 80 + 5,
+          y_pos: Math.random() * 80 + 5,
+          status: 'approved'
+      };
+
+      const { error } = await supabaseClient.from('comments').insert([newComment]);
+
+      if (error) {
+          showMessageModal('오류', '메시지를 보내는 데 실패했습니다.');
+      } else {
+          markAsCommented(paperId);
+          hideCommentForm();
+          showSuccessMessage();
+          // After submitting, refresh the bubbles to show the new one
+          loadCommenterPage(paperId);
+      }
+    }    
+
+    function showSuccessMessage() { document.getElementById('success-message').classList.add('active'); document.getElementById('overlay').classList.add('active'); }
+    function hideSuccessMessage() { document.getElementById('success-message').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); }
+    function showMessageModal(title, content) { document.getElementById('message-modal-title').textContent = title; document.getElementById('message-modal-content').textContent = content; document.getElementById('message-modal').classList.add('active'); document.getElementById('overlay').classList.add('active'); }
+    function hideMessageModal() { document.getElementById('message-modal').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); }
+    function showDownloadModal() { document.getElementById('download-modal').classList.add('active'); document.getElementById('overlay').classList.add('active'); }
+    function hideDownloadModal() { document.getElementById('download-modal').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); hideProgressIndicator(); }
+    
+    // Download and helper functions (downloadAsImage, downloadAsVideo, etc.) remain the same.
+    // ... (Your existing download and helper functions are good, no changes needed here)
+    function showProgressIndicator() { document.getElementById('progress-indicator').style.display = 'block'; let progress = 0; const progressBar = document.getElementById('progress-bar'); const interval = setInterval(() => { progress += Math.random() * 20; if (progress >= 100) { progress = 100; clearInterval(interval); setTimeout(hideProgressIndicator, 500); } progressBar.style.width = progress + '%'; }, 150); }
+    function hideProgressIndicator() { document.getElementById('progress-indicator').style.display = 'none'; document.getElementById('progress-bar').style.width = '0%'; }
+    
+/**
+     * Creates a web-friendly animated GIF of bubbles appearing in random order.
+     */
+    async function downloadAsVideo() {
+        console.log("Starting animated GIF creation...");
+        showProgressIndicator();
+        showMessageModal('애니메이션 생성 중...', '잠시만 기다려주세요. 메시지 수에 따라 시간이 걸릴 수 있습니다.');
+
+        const container = document.getElementById('bubbles-container');
+        let bubbles = Array.from(container.querySelectorAll('.bubble'));
+
+        if (bubbles.length === 0) {
+            hideMessageModal();
+            showMessageModal('다운로드 오류', '애니메이션을 만들 메시지가 없습니다.');
+            hideDownloadModal();
+            return;
+        }
+
+        // --- NEW: Calculate a web-friendly scale ---
+        const MAX_DIMENSION = 1080; // Set max size to 1080p for compatibility
+        const scale = Math.min(MAX_DIMENSION / window.innerWidth, MAX_DIMENSION / window.innerHeight, 1);
+        const canvasWidth = window.innerWidth * scale;
+        const canvasHeight = window.innerHeight * scale;
+        console.log(`Canvas scaled to: ${canvasWidth}x${canvasHeight} (Scale: ${scale})`);
+        
+        // Get all bubble positions *before* the loop, as they won't change.
+        const bubbleData = bubbles.map(bubble => ({
+            rect: bubble.getBoundingClientRect(),
+            text: bubble.querySelector('.bubble-content').textContent,
+            color: bubble.dataset.color || '#bb1fe6'
+        }));
+
+        // Shuffle the bubble data for random appearance order
+        for (let i = bubbleData.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [bubbleData[i], bubbleData[j]] = [bubbleData[j], bubbleData[i]];
+        }
+
+        const gif = new GIF({
+            workers: 2,
+            quality: 10,
+            width: canvasWidth,
+            height: canvasHeight,
+            workerScript: 'gif.worker.js'
+        });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        
+        const drawFrame = (visibleBubbles) => {
+            // Reset canvas state for each frame
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            
+            const gradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
+            gradient.addColorStop(0, '#f8f9ff');
+            gradient.addColorStop(0.5, '#fff0f8');
+            gradient.addColorStop(1, '#f0f8ff');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            
+            // Apply the scale to all subsequent drawing
+            ctx.scale(scale, scale);
+
+            visibleBubbles.forEach(data => {
+                const { rect, text, color } = data;
+                
+                const bubbleGradient = ctx.createLinearGradient(rect.left, rect.top, rect.left + rect.width, rect.top + rect.height);
+                bubbleGradient.addColorStop(0, color);
+                bubbleGradient.addColorStop(1, adjustBrightness(color, -20));
+                
+                ctx.fillStyle = bubbleGradient;
+                ctx.beginPath();
+                ctx.roundRect(rect.left, rect.top, rect.width, rect.height, 24);
+                ctx.fill();
+                
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '16px Pretendard, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                wrapText(ctx, text, rect.left + rect.width / 2, rect.top, rect.width - 30, 20, rect.height);
+            });
+        };
+
+        let visibleBubblesInFrame = [];
+        drawFrame([]);
+        gif.addFrame(ctx, { copy: true, delay: 1000 });
+
+        for (const data of bubbleData) {
+            visibleBubblesInFrame.push(data);
+            drawFrame(visibleBubblesInFrame);
+            gif.addFrame(ctx, { copy: true, delay: 800 });
+        }
+        
+        gif.addFrame(ctx, { copy: true, delay: 2000 });
+
+        gif.on('finished', function(blob) {
+            console.log("GIF process finished, creating blob URL...");
+            hideMessageModal();
+            hideDownloadModal();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'rolling-paper.gif';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            console.log("Download triggered.");
+        });
+        
+        gif.on('progress', function(p) {
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = (p * 100) + '%';
+        });
+
+        console.log("Starting GIF render...");
+        gif.render();
+    }
+    /**
+     * Downloads the current state as a static PNG image.
+     */
+    function downloadAsImage() {
+        showProgressIndicator();
+        const container = document.getElementById('bubbles-container');
+        const bubbles = Array.from(container.querySelectorAll('.bubble'));
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const ctx = canvas.getContext('2d');
+        
+        // Draw background
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        gradient.addColorStop(0, '#f8f9ff');
+        gradient.addColorStop(0.5, '#fff0f8');
+        gradient.addColorStop(1, '#f0f8ff');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw all visible bubbles
+        bubbles.forEach(bubble => {
+            const rect = bubble.getBoundingClientRect();
+            const text = bubble.querySelector('.bubble-content').textContent;
+            const color = bubble.dataset.color || '#bb1fe6';
+            
+            const bubbleGradient = ctx.createLinearGradient(rect.left, rect.top, rect.left + rect.width, rect.top + rect.height);
+            bubbleGradient.addColorStop(0, color);
+            bubbleGradient.addColorStop(1, adjustBrightness(color, -20));
+            
+            ctx.fillStyle = bubbleGradient;
+            ctx.beginPath();
+            ctx.roundRect(rect.left, rect.top, rect.width, rect.height, 24);
+            ctx.fill();
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '16px Pretendard, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            // Use the improved wrapText function
+            wrapText(ctx, text, rect.left + rect.width / 2, rect.top, rect.width - 30, 20, rect.height);
+        });
+
+        // Use a timeout to allow the progress bar to be seen
+        setTimeout(() => {
+            downloadCanvas(canvas, 'rolling-paper-image.png');
+            hideDownloadModal();
+        }, 500);
+    }
+
+    /**
+     * Helper function to wrap text inside the canvas.
+     */
+    function wrapText(context, text, x, y, maxWidth, lineHeight, bubbleHeight) {
+        const words = text.split(' ');
+        let line = '';
+        const lines = [];
+
+        // Create an array of lines that fit within the bubble width
+        for (let n = 0; n < words.length; n++) {
+            let testLine = line + words[n] + ' ';
+            let metrics = context.measureText(testLine);
+            if (metrics.width > maxWidth && n > 0) {
+                lines.push(line);
+                line = words[n] + ' ';
+            } else {
+                line = testLine;
+            }
+        }
+        lines.push(line);
+
+        // Calculate starting Y position to vertically center the text block
+        const textBlockHeight = lines.length * lineHeight;
+        let startY = y + (bubbleHeight - textBlockHeight) / 2 + (lineHeight / 2); // Start from top of bubble + padding
+
+        // Draw each line
+        for (let i = 0; i < lines.length; i++) {
+            context.fillText(lines[i].trim(), x, startY);
+            startY += lineHeight;
+        }
+    }
+    function downloadCanvas(source, filename) { const link = document.createElement('a'); link.href = typeof source === 'string' ? source : source.toDataURL('image/png'); link.download = filename; document.body.appendChild(link); link.click(); document.body.removeChild(link); }
+    function adjustBrightness(color, amount) { const hex = color.replace('#', ''); const r = Math.max(0, Math.min(255, parseInt(hex.substring(0, 2), 16) + amount)); const g = Math.max(0, Math.min(255, parseInt(hex.substring(2, 4), 16) + amount)); const b = Math.max(0, Math.min(255, parseInt(hex.substring(4, 6), 16) + amount)); return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`; }
+    if (!CanvasRenderingContext2D.prototype.roundRect) { CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) { if (w < 2 * r) r = w / 2; if (h < 2 * r) r = h / 2; this.beginPath(); this.moveTo(x+r, y); this.arcTo(x+w, y, x+w, y+h, r); this.arcTo(x+w, y+h, x, y+h, r); this.arcTo(x, y+h, x, y, r); this.arcTo(x, y, x+w, y, r); this.closePath(); return this; }; }
+
+    // Entry point: Executed when the window finishes loading
+    // Replace your entire window.onload function with this one.
+    window.onload = () => {
+      const paperId = getUrlParam('id');
+      if (paperId) {
+        // If an ID is in the URL, this is a commenter/viewer.
+        isOwnerView = false;
+        showScreen('comment-screen');
+      } else {
+        // Otherwise, it's a new visitor.
+        isOwnerView = false;
+        showScreen('welcome-screen');
+      }
+      
+      // Add event listeners for the bottom sheet
+      const shareSheet = document.getElementById('share-sheet');
+      shareSheet.querySelector('.bottom-sheet-handle').addEventListener('click', toggleShareSheet);
+      shareSheet.querySelector('.bottom-sheet-peek-content').addEventListener('click', toggleShareSheet);
+    };
+  </script>
+</body>
+</html>
