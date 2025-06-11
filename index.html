@@ -1509,7 +1509,7 @@
     async function toggleCommentStatus(commentId, currentStatus) {
         const newStatus = currentStatus === 'approved' ? 'rejected' : 'approved';
 
-        // Update the status in the Supabase database
+        // 1. Update the status in the Supabase database
         const { error } = await supabaseClient
             .from('comments')
             .update({ status: newStatus })
@@ -1520,30 +1520,68 @@
             return;
         }
 
-        // Find the comment in the local currentUser array and update it
+        // 2. Find the comment in the local currentUser array and update its status
         const commentToUpdate = currentUser.comments.find(c => c.id === commentId);
         if (commentToUpdate) {
             commentToUpdate.status = newStatus;
         }
 
-        // Re-render the management table and the main bubble view
+        // 3. Just re-render the table, DO NOT navigate away.
         renderManagementTable();
-        showScreen('view-screen');
     }
 
-    /**
-     * Navigates back to the main view screen from the management screen.
-     */
     function goBackToViewScreen() {
+        // Now, this button is responsible for navigating back and showing the updated bubbles.
         showScreen('view-screen');
     }
-    
     // Drag and Drop functions (startDrag, throttledDrag, drag, endDrag) remain largely the same.
     // ... (Your existing drag functions are good, no changes needed here)
     function startDrag(e) { e.preventDefault(); e.stopPropagation(); topZ += 1; this.style.zIndex = topZ; activeBubble = this; activeBubble.classList.add('dragging'); const rect = activeBubble.getBoundingClientRect(); const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX; const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY; offsetX = clientX - rect.left; offsetY = clientY - rect.top; isDragging = true; document.addEventListener('mousemove', throttledDrag, { passive: false }); document.addEventListener('touchmove', throttledDrag, { passive: false }); document.addEventListener('mouseup', endDrag, { passive: false }); document.addEventListener('touchend', endDrag, { passive: false }); }
     function throttledDrag(e) { if (!isDragging || !activeBubble || dragThrottled) return; dragThrottled = true; requestAnimationFrame(() => { drag(e); dragThrottled = false; }); }
     // This function doesn't need changes, but is required for context.
-    function drag(e) { if (!isDragging || !activeBubble) return; e.preventDefault(); const bubbleRect = activeBubble.getBoundingClientRect(); const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX; const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY; let newX_px = clientX - offsetX; let newY_px = clientY - offsetY; const paddingPx = window.innerWidth <= 768 ? 10 : 20; newX_px = Math.max(paddingPx, Math.min(newX_px, window.innerWidth - bubbleRect.width - paddingPx)); newY_px = Math.max(paddingPx, Math.min(newY_px, window.innerHeight - bubbleRect.height - paddingPx)); const xVw = (newX_px / window.innerWidth) * 100; const yVh = (newY_px / window.innerHeight) * 100; activeBubble.style.left = `${xVw}vw`; activeBubble.style.top = `${yVh}vh`; }
+    function drag(e) {
+      if (!isDragging || !activeBubble) return;
+      e.preventDefault();
+        
+      const bubbleRect = activeBubble.getBoundingClientRect();
+      const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+      const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
+        
+      let newX_px = clientX - offsetX;
+      let newY_px = clientY - offsetY;
+        
+      // --- FIX IS HERE ---
+      // 1. Get the heights of the header and bottom sheet.
+      const header = document.querySelector('.header');
+      const shareSheet = document.getElementById('share-sheet');
+      const headerHeight = header.offsetHeight;
+      
+      // Use peek height for bottom sheet if owner, otherwise 0
+      let bottomSheetHeight = 0;
+      if (isOwnerView) {
+          bottomSheetHeight = window.innerWidth <= 767 ? 60 : 80;
+      }
+      
+      const paddingPx = 10;
+
+      // 2. Calculate the safe boundaries.
+      const minX = paddingPx;
+      const maxX = window.innerWidth - bubbleRect.width - paddingPx;
+      const minY = headerHeight + paddingPx;
+      const maxY = window.innerHeight - bubbleRect.height - bottomSheetHeight - paddingPx;
+
+      // 3. Constrain the bubble within the new safe boundaries.
+      newX_px = Math.max(minX, Math.min(newX_px, maxX));
+      newY_px = Math.max(minY, Math.min(newY_px, maxY));
+      // --- END OF FIX ---
+        
+      const xVw = (newX_px / window.innerWidth) * 100;
+      const yVh = (newY_px / window.innerHeight) * 100;
+        
+      activeBubble.style.left = `${xVw}vw`;
+      activeBubble.style.top = `${yVh}vh`;
+    }
+    
     // Replace your endDrag function with this async version.
     async function endDrag(e) {
       if (!isDragging) return;
@@ -1663,14 +1701,12 @@
      */
     async function submitComment() {
       const commentText = document.getElementById('comment-text').value.trim();
-      const urlParams = new URLSearchParams(window.location.search);
-      const paperId = urlParams.get('id');
+      const paperId = getUrlParam('id');
 
       if (!commentText) {
         showMessageModal('메시지 오류', '메시지를 입력해주세요.');
         return;
       }
-
       if (hasCommented(paperId)) {
         showMessageModal('중복 메시지', '이미 메시지를 작성하셨습니다.');
         return;
@@ -1693,10 +1729,15 @@
           markAsCommented(paperId);
           hideCommentForm();
           showSuccessMessage();
-          // After submitting, refresh the bubbles to show the new one
+
+          // --- FIX IS HERE ---
+          // 1. Make the bubble container visible again.
+          document.getElementById('comment-bubbles-container').style.display = 'block';
+          // 2. Load all comments, including the new one.
           loadCommenterPage(paperId);
+          // --- END OF FIX ---
       }
-    }    
+    }
 
     function showSuccessMessage() { document.getElementById('success-message').classList.add('active'); document.getElementById('overlay').classList.add('active'); }
     function hideSuccessMessage() { document.getElementById('success-message').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); }
