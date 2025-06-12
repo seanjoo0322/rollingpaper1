@@ -1142,6 +1142,9 @@
     </div>
   </div>
 
+  <div class="download-modal" id="download-modal">
+  <h2>다운로드 옵션</h2>
+  <p>원하는 형식을 선택하세요</p>
   <div class="download-options">
     <div class="download-option" onclick="downloadAsImage()">
       <div class="download-option-icon">🖼️</div>
@@ -1156,8 +1159,16 @@
         <h3>애니메이션 이미지</h3>
         <p>버블 등장 효과 이미지</p>
       </div>
-    </div>
+      </div>
   </div>
+
+  <div class="progress-indicator" id="progress-indicator" style="display: none;">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+  <div class="button-row">
+    <button class="secondary" onclick="hideDownloadModal()">취소</button>
+  </div>
+</div>
   
   <script>
     const supabaseUrl = 'https://oralhirhnmohctgsmmnv.supabase.co';
@@ -1172,25 +1183,6 @@
     let offsetX, offsetY; // Offset of mouse/touch from bubble's top-left for smooth dragging
     let isDragging = false; // Flag to indicate if a bubble is being dragged
     let dragThrottled = false; // Flag for throttling drag events for performance
-    
-    // Sample users data (simulating a database for demonstration purposes)
-    //const users = [
-    //  {
-    //    name: "홍길동",
-    //    password: "1234",
-    //    id: "abc123",
-    //    comments: [
-    //      { text: "아니 근데 진짜 잘생겼더라;;", color: "#bb1fe6", x: 20, y: 30, status: 'approved' },
-    //      { text: "걍 볼때마다 존멋이야", color: "#bb1fe6", x: 60, y: 20, status: 'approved' },
-    //      { text: "와 이건 못참지 ㅋㅋ", color: "#ff4081", x: 40, y: 70, status: 'approved' },
-    //      { text: "와 1", color: "#ff4081", status: 'approved' },
-    //      { text: "와 2", color: "#ff4081", status: 'approved' },
-    //      { text: "와 3", color: "#ff4081", status: 'approved' },
-    //      { text: "와 4", color: "#ff4081", status: 'approved' },
-    //      { text: "다음 학기에도 제발 같은 반 가자", color: "#00bcd4", x: 75, y: 45, status: 'approved' }
-    //    ]
-    //  }
-    //];
 
     
     /**
@@ -1567,12 +1559,46 @@
         renderManagementTable();
     }
 
-    function goBackToViewScreen() {
-        // Now, this button is responsible for navigating back and showing the updated bubbles.
-        showScreen('view-screen');
+    async function goBackToViewScreen() {
+      // Save any pending position changes before navigating back
+      const bubbles = document.querySelectorAll('#bubbles-container .bubble');
+      const savePromises = [];
+      
+      bubbles.forEach(bubble => {
+          const commentId = bubble.dataset.id;
+          if (commentId) {
+              const finalX = parseFloat(bubble.style.left);
+              const finalY = parseFloat(bubble.style.top);
+
+              // Only save if position has actually changed
+              if (!isNaN(finalX) && !isNaN(finalY)) {
+                  const savePromise = supabaseClient
+                      .from('comments')
+                      .update({ x_pos: finalX, y_pos: finalY })
+                      .eq('id', commentId);
+                  savePromises.push(savePromise);
+              }
+          }
+    });
+    
+    // Wait for all saves to complete before navigating
+    await Promise.all(savePromises);
+    
+    // Refresh currentUser.comments from database to get latest data
+    const { data: commentsData, error } = await supabaseClient
+        .from('comments')
+        .select('*')
+        .eq('paper_id', currentUser.id);
+    
+    if (!error && commentsData) {
+        currentUser.comments = commentsData;
     }
+    
+    showScreen('view-screen');
+    }
+    
     // Drag and Drop functions (startDrag, throttledDrag, drag, endDrag) remain largely the same.
-    // ... (Your existing drag functions are good, no changes needed here)
+    
     function startDrag(e) { e.preventDefault(); e.stopPropagation(); topZ += 1; this.style.zIndex = topZ; activeBubble = this; activeBubble.classList.add('dragging'); const rect = activeBubble.getBoundingClientRect(); const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX; const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY; offsetX = clientX - rect.left; offsetY = clientY - rect.top; isDragging = true; document.addEventListener('mousemove', throttledDrag, { passive: false }); document.addEventListener('touchmove', throttledDrag, { passive: false }); document.addEventListener('mouseup', endDrag, { passive: false }); document.addEventListener('touchend', endDrag, { passive: false }); }
     function throttledDrag(e) { if (!isDragging || !activeBubble || dragThrottled) return; dragThrottled = true; requestAnimationFrame(() => { drag(e); dragThrottled = false; }); }
     // This function doesn't need changes, but is required for context.
