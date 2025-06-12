@@ -974,6 +974,15 @@
       margin: 0 12px; /* Add some horizontal margin for spacing */
       }
     }
+    .kakao-btn {
+      background: linear-gradient(135deg, #FEE500, #FFCD00);
+      color: #3A1D1D;
+    }
+
+    .kakao-btn:hover {
+      box-shadow: 0 8px 25px rgba(254, 229, 0, 0.4);
+    }
+    
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js"></script>
@@ -1042,6 +1051,8 @@
       <p>아래 공유 버튼을 눌러 친구들에게 링크를 공유해보세요!</p>
     </div>
     
+    <div class="add-bubble" onclick="showShareOptions()" style="bottom: 30px;">📤</div>
+
     <div class="bottom-sheet peek" id="share-sheet">
       <div class="bottom-sheet-handle" role="button" aria-label="Toggle share sheet" tabindex="0"></div>
       <div class="bottom-sheet-peek-content" role="button" aria-label="Open share options" tabindex="0">
@@ -1055,6 +1066,7 @@
           <button class="share-btn" onclick="copyLink()">📋 링크 복사</button>
           <button class="share-btn twitter-btn" onclick="shareToTwitter()">🐦 트위터</button>
           <button class="share-btn instagram-btn" onclick="shareToInstagram()">📷 인스타그램</button>
+          <button class="share-btn kakao-btn" onclick="shareToKakao()">💬 카카오톡</button>
         </div>
       </div>
     </div>
@@ -1446,6 +1458,23 @@
         window.location.href = window.location.pathname;
     }
 
+    function showShareOptions() {
+      const shareSheet = document.getElementById('share-sheet');
+      shareSheet.classList.add('active');
+      shareSheet.classList.remove('peek');
+    }
+
+    function shareToKakao() {
+      if (!currentUser) return;
+      const ownerName = currentUser.name;
+      const url = document.getElementById('share-link').textContent;
+      const text = `${ownerName}님의 롤링페이퍼에 익명으로 메시지를 남겨봐!`;
+
+      // Open KakaoTalk sharing - mobile will open app, desktop will show web version
+      const kakaoUrl = `https://sharer.kakao.com/talk/friends/?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+      window.open(kakaoUrl, '_blank');
+    }
+    
     /**
      * Renders comment bubbles in a specified container.
      */
