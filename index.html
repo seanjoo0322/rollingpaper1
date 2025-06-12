@@ -190,6 +190,13 @@
       padding: 0;
     }
     
+    /* Add this rule for the new twitter button */
+    .twitter-btn {
+        background: linear-gradient(135deg, #1DA1F2, #1991DA);
+    }
+    .twitter-btn:hover {
+        box-shadow: 0 8px 25px rgba(29, 161, 242, 0.4);
+    }
     /* Bubble Styles */
     .bubble {
       position: fixed; /* Changed from absolute to fixed */
@@ -830,32 +837,39 @@
       margin: 24px 0;
     }
     
+    /* Replace your existing .download-option CSS with this */
     .download-option {
-      flex: 1;
-      padding: 20px 16px;
-      background: rgba(248, 248, 248, 0.9);
-      border-radius: 16px;
-      cursor: pointer;
-      transition: all 0.3s;
-      border: 2px solid transparent;
+        flex: 1;
+        padding: 20px 16px;
+        background: rgba(248, 248, 248, 0.9);
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: 2px solid #eee; /* Add a subtle border */
+        display: flex; /* Use flexbox for alignment */
+        align-items: center;
+        gap: 12px; /* Space between icon and text */
     }
-    
     .download-option:hover {
-      background: rgba(76, 175, 80, 0.1);
-      border-color: #4caf50;
-      transform: translateY(-2px);
+        background: rgba(240, 240, 240, 1);
+        border-color: #ddd;
+        transform: translateY(-2px);
     }
-    
     .download-option h3 {
-      font-size: clamp(1rem, 2.5vw, 1.1rem);
-      margin-bottom: 8px;
-      color: #333;
+        font-size: clamp(1rem, 2.5vw, 1.1rem);
+        margin-bottom: 4px; /* Reduced margin */
+        color: #333;
+        text-align: left;
     }
-    
     .download-option p {
-      font-size: clamp(0.8rem, 2vw, 0.9rem);
-      color: #666;
-      margin: 0;
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
+        color: #666;
+        margin: 0;
+        text-align: left;
+    }
+    /* This is a new class for the icon part */
+    .download-option-icon {
+        font-size: 2rem;
     }
     
     /* Progress indicator for downloads */
@@ -953,6 +967,12 @@
       .container {
         padding-top: 0; /* No padding needed if bubbles are fixed */
       }
+
+      /* Add this new rule to your <style> section */
+      #commenter-header .header-right button {
+      width: 100%;
+      margin: 0 12px; /* Add some horizontal margin for spacing */
+      }
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
@@ -989,12 +1009,14 @@
   <div class="screen hidden" id="create-screen">
     <div class="welcome-container">
       <h1>새 페이지 만들기</h1>
-      <p>나만의 롤링 페이퍼 페이지를<br>만들어볼까요? 🎉</p>
-      <input type="text" id="create-name" placeholder="이름을 입력하세요">
-      <input type="password" id="create-password" placeholder="비밀번호를 설정하세요">
+      <p>로그인에 사용할 영문 아이디와<br>롤링페이퍼에 표시될 이름을 입력해주세요.</p>
+      <input type="text" id="create-username" placeholder="아이디 (영문/숫자만)">
+      <input type="text" id="create-display-name" placeholder="표시될 이름 (모든 언어 가능)">
+      <input type="password" id="create-password" placeholder="비밀번호 설정">
+      <input type="password" id="create-password-confirm" placeholder="비밀번호 확인">
       <div class="button-row">
-        <button onclick="createPaper()">만들기</button>
-        <button class="secondary" onclick="showScreen('welcome-screen')">뒤로</button>
+          <button onclick="createPaper()">만들기</button>
+          <button class="secondary" onclick="showScreen('welcome-screen')">뒤로</button>
       </div>
     </div>
   </div>
@@ -1031,6 +1053,7 @@
         <div class="share-link" id="share-link">rolling-paper.com/p/abc123</div>
         <div class="share-options">
           <button class="share-btn" onclick="copyLink()">📋 링크 복사</button>
+          <button class="share-btn twitter-btn" onclick="shareToTwitter()">🐦 트위터</button>
           <button class="share-btn instagram-btn" onclick="shareToInstagram()">📷 인스타그램</button>
         </div>
       </div>
@@ -1118,28 +1141,21 @@
       <button onclick="hideMessageModal()">확인</button>
     </div>
   </div>
-  
-  <div class="download-modal" id="download-modal">
-    <h2>다운로드 옵션 📥</h2>
-    <p>원하는 형식을 선택하세요</p>
-    
-    <div class="download-options">
-      <div class="download-option" onclick="downloadAsImage()">
-        <h3>🖼️ 이미지</h3>
+
+  <div class="download-options">
+    <div class="download-option" onclick="downloadAsImage()">
+      <div class="download-option-icon">🖼️</div>
+      <div class="download-option-text">
+        <h3>이미지</h3>
         <p>현재 상태 스크린샷</p>
       </div>
-      <div class="download-option" onclick="downloadAsVideo()">
-        <h3>🎬 애니메이션 이미지</h3>
+    </div>
+    <div class="download-option" onclick="downloadAsVideo()">
+      <div class="download-option-icon">🎬</div>
+      <div class="download-option-text">
+        <h3>애니메이션 이미지</h3>
         <p>버블 등장 효과 이미지</p>
       </div>
-    </div>
-    
-    <div class="progress-indicator" id="progress-indicator" style="display: none;">
-      <div class="progress-bar" id="progress-bar"></div>
-    </div>
-    
-    <div class="button-row">
-      <button class="secondary" onclick="hideDownloadModal()">취소</button>
     </div>
   </div>
   
@@ -1187,23 +1203,29 @@
         return commentsArray.filter(c => c.status === 'approved');
     }
 
+    // Replace your loadCommenterPage function
     async function loadCommenterPage(paperId) {
-        const { data, error } = await supabaseClient
-            .from('comments')
-            .select('*')
-            .eq('paper_id', paperId);
-
-        if (error) {
-            showMessageModal('오류', '댓글을 불러오는 데 실패했습니다.');
+        // Fetch both the paper details and its comments at the same time
+        const { data: paperData, error: paperError } = await supabaseClient
+            .from('papers')
+            .select('name, comments(*)') // Get name from papers, and all comments
+            .eq('id', paperId)
+            .single();
+    
+        if (paperError || !paperData) {
+            showMessageModal('오류', '롤링페이퍼를 불러오는 데 실패했습니다.');
             return;
         }
-
-        const visibleComments = getVisibleComments(data);
-        // We need to map database columns (x_pos, y_pos) to bubble properties (x, y)
+      
+        // --- FIX IS HERE ---
+        // Update the comment form title with the owner's name
+        const ownerName = paperData.name;
+        document.querySelector('#comment-form h2').textContent = `${ownerName}님에게 메시지 남기기 💝`;
+      
+        const visibleComments = getVisibleComments(paperData.comments);
         const formattedComments = visibleComments.map(c => ({...c, x: c.x_pos, y: c.y_pos}));
         renderBubbles(formattedComments, 'comment-bubbles-container', 'empty-state-commenter');
-
-        // Update UI based on whether the user has commented
+      
         if (hasCommented(paperId)) {
             document.querySelector('.add-bubble').style.display = 'none';
             document.getElementById('commenter-header').style.display = 'flex';
@@ -1335,25 +1357,23 @@
      * Handles user login.
      */
     async function login() {
-      const name = document.getElementById('login-name').value;
-      const password = document.getElementById('login-password').value;
+       const username = document.getElementById('login-name').value; // This input should now be for username
+       const password = document.getElementById('login-password').value;    
+       if (!username || !password) {
+           showMessageModal('로그인 오류', '아이디와 비밀번호를 입력해주세요.');
+           return;
+       }
 
-      if (!name || !password) {
-        showMessageModal('로그인 오류', '이름과 비밀번호를 입력해주세요.');
-        return;
-      }
-
-      // Query Supabase for a matching paper
-      const { data, error } = await supabaseClient
-        .from('papers')
-        .select('*')
-        .eq('name', name)
-        .eq('password', password)
-        .single(); // .single() expects only one result
-
-      if (error || !data) {
-        showMessageModal('로그인 실패', '이름 또는 비밀번호가 일치하지 않습니다.');
-      } else {
+       // Login using the 'username' column
+       const { data, error } = await supabaseClient
+           .from('papers')
+           .select('*, comments(*)')
+           .eq('username', username)
+           .eq('password', password)
+           .single();   
+       if (error || !data) {
+           showMessageModal('로그인 실패', '아이디 또는 비밀번호가 일치하지 않습니다.');
+         } else {
         // Successfully found the user. Fetch their comments.
         const { data: commentsData, error: commentsError } = await supabaseClient
           .from('comments')
@@ -1362,6 +1382,7 @@
 
         currentUser = data;
         currentUser.comments = commentsData || []; // Attach comments to the user object
+        sessionStorage.setItem('loggedInUserId', data.id); // Save user ID to session        
         isOwnerView = true;
         showScreen('view-screen');
       }
@@ -1370,29 +1391,44 @@
     /**
      * Creates a new rolling paper for a user.
      */
-    async function createPaper() {
-      const name = document.getElementById('create-name').value;
-      const password = document.getElementById('create-password').value;
-
-      if (!name || !password) {
-        showMessageModal('생성 오류', '이름과 비밀번호를 입력해주세요.');
+  async function createPaper() {
+    const username = document.getElementById('create-username').value;
+    const displayName = document.getElementById('create-display-name').value;
+    const password = document.getElementById('create-password').value;
+    const passwordConfirm = document.getElementById('create-password-confirm').value;
+    // Validation
+    const englishOnlyRegex = /^[a-zA-Z0-9]+$/;
+    if (!englishOnlyRegex.test(username)) {
+        showMessageModal('생성 오류', '아이디는 영문과 숫자만 사용할 수 있습니다.');
         return;
-      }
+    }
+    if (password.length < 6) {
+        showMessageModal('생성 오류', '비밀번호는 6자 이상이어야 합니다.');
+        return;
+    }
+    if (password !== passwordConfirm) {
+        showMessageModal('생성 오류', '비밀번호가 일치하지 않습니다.');
+        return;
+    }
+    if (!displayName) {
+        showMessageModal('생성 오류', '표시될 이름을 입력해주세요.');
+        return;
+    }
 
-      // Insert a new row into the 'papers' table
+
       const { data, error } = await supabaseClient
         .from('papers')
         .insert([
-          { name: name, password: password },
+          { username: username, name: displayName, password: password },
         ])
         .select()
         .single();
 
       if (error) {
         if (error.message.includes('unique constraint')) {
-          showMessageModal('생성 오류', '이미 존재하는 이름입니다. 다른 이름을 사용해주세요.');
+          showMessageModal('생성 오류', '이미 존재하는 아이디입니다.');
         } else {
-          showMessageModal('생성 오류', '페이지를 만드는 데 실패했습니다.');
+          showMessageModal('생성 오류', '페이지를 만드는 데 실패했습니다: ' + error.message);
         }
       } else {
         currentUser = data;
@@ -1401,6 +1437,7 @@
         showScreen('view-screen');
       }
     }
+    
     /**
      * Logs out the current user and returns to the welcome screen.
      */
@@ -1409,7 +1446,7 @@
       isOwnerView = false;
       const shareSheet = document.getElementById('share-sheet');
       shareSheet.classList.remove('active', 'peek');
-      // Navigate to the clean welcome screen
+      sessionStorage.removeItem('loggedInUserId'); // Clear the session
       window.location.href = window.location.pathname;
     }
     
@@ -1629,6 +1666,16 @@
      */
     function shareToInstagram() {
         showMessageModal('공유 기능', '인스타그램 공유는 현재 지원되지 않습니다. 링크를 복사하여 사용해주세요.');
+    }
+    
+    function shareToTwitter() {
+    if (!currentUser) return;
+    const ownerName = currentUser.name; // Assumes display name is in 'name'
+    const url = document.getElementById('share-link').textContent;
+    const text = `궁금해~ 나 어떻게 생각해? ${ownerName}님의 롤링페이퍼에 익명으로 메시지를 남겨봐!`;
+
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+    window.open(twitterUrl, '_blank');
     }
     
     /**
@@ -1958,24 +2005,43 @@
     if (!CanvasRenderingContext2D.prototype.roundRect) { CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) { if (w < 2 * r) r = w / 2; if (h < 2 * r) r = h / 2; this.beginPath(); this.moveTo(x+r, y); this.arcTo(x+w, y, x+w, y+h, r); this.arcTo(x+w, y+h, x, y+h, r); this.arcTo(x, y+h, x, y, r); this.arcTo(x, y, x+w, y, r); this.closePath(); return this; }; }
 
     // Entry point: Executed when the window finishes loading
-    // Replace your entire window.onload function with this one.
-    window.onload = () => {
-      const paperId = getUrlParam('id');
-      if (paperId) {
-        // If an ID is in the URL, this is a commenter/viewer.
-        isOwnerView = false;
-        showScreen('comment-screen');
-      } else {
-        // Otherwise, it's a new visitor.
-        isOwnerView = false;
-        showScreen('welcome-screen');
-      }
+    window.onload = async () => { // Make the function async
+        const loggedInUserId = sessionStorage.getItem('loggedInUserId');
+        const paperIdFromUrl = getUrlParam('id');
+    
+        if (loggedInUserId) {
+            // If a user session exists, automatically log them in
+            const { data, error } = await supabaseClient
+                .from('papers')
+                .select('*, comments(*)') // Fetch paper and its comments
+                .eq('id', loggedInUserId)
+                .single();
+        
+            if (data) {
+                currentUser = data;
+                isOwnerView = true;
+                showScreen('view-screen');
+            } else {
+                // If session is invalid, clear it and show welcome screen
+                sessionStorage.removeItem('loggedInUserId');
+                showScreen('welcome-screen');
+            }
+        } else if (paperIdFromUrl) {
+            // If no session, but there's an ID in the URL, show commenter view
+            isOwnerView = false;
+            showScreen('comment-screen');
+        } else {
+            // Default for new visitors
+            isOwnerView = false;
+            showScreen('welcome-screen');
+        }
+        
+        // Add event listeners for the bottom sheet
+        const shareSheet = document.getElementById('share-sheet');
+        shareSheet.querySelector('.bottom-sheet-handle').addEventListener('click', toggleShareSheet);
+        shareSheet.querySelector('.bottom-sheet-peek-content').addEventListener('click', toggleShareSheet);
+    }; 
       
-      // Add event listeners for the bottom sheet
-      const shareSheet = document.getElementById('share-sheet');
-      shareSheet.querySelector('.bottom-sheet-handle').addEventListener('click', toggleShareSheet);
-      shareSheet.querySelector('.bottom-sheet-peek-content').addEventListener('click', toggleShareSheet);
-    };
   </script>
 </body>
 </html>
