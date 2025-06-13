@@ -363,7 +363,7 @@
     /* Add Bubble Button (FAB) */
     .add-bubble {
       position: fixed;
-      bottom: clamp(120px, 20vh, 140px); /* Responsive bottom position */
+      bottom: clamp(30px, 8vh, 50px); /* Responsive bottom position */
       right: clamp(20px, 5vw, 30px); /* Responsive right position */
       width: clamp(56px, 12vw, 64px); /* Responsive size */
       height: clamp(56px, 12vw, 64px);
@@ -390,94 +390,95 @@
     .add-bubble:active {
       transform: translateY(-2px) scale(0.95);
     }
-    
-    /* Bottom Sheet Styles - Improved for desktop and mobile */
-    .bottom-sheet {
+
+    /* Share Button Style */
+    .share-button-fixed {
       position: fixed;
-      bottom: 0;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, #bb1fe6, #5c33f6);
+      color: white;
+      padding: 16px 24px;
+      border-radius: 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      box-shadow: 0 6px 20px rgba(187, 31, 230, 0.4);
+      z-index: 1000;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .share-button-fixed:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 10px 30px rgba(187, 31, 230, 0.6);
+    }
+
+    /* Share Modal Styles */
+    .share-modal {
+      position: fixed;
+      top: 0;
       left: 0;
       width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .share-modal.active {
+      display: flex;
+    }
+
+    .share-modal-content {
       background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(30px);
-      border-radius: 24px 24px 0 0;
-      box-shadow: 0 -8px 40px rgba(0,0,0,0.12);
-      z-index: 1100; /* Above add bubble button */
-      transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-      border-top: 1px solid rgba(255, 255, 255, 0.3);
-      touch-action: pan-y; /* Allow vertical panning */
-    }
-    
-    /* Desktop specific adjustments for bottom sheet */
-    @media (min-width: 768px) {
-      .bottom-sheet {
-        transform: translateY(calc(100% - 80px)); /* Peek height for desktop */
-      }
-      
-      .bottom-sheet.active {
-        transform: translateY(0); /* Fully open on desktop */
-      }
-      
-      .bottom-sheet.peek {
-        transform: translateY(calc(100% - 80px));
-      }
-      
-      .bottom-sheet-peek-content {
-        height: 80px;
-        cursor: pointer;
-      }
-    }
-    
-    /* Mobile specific adjustments for bottom sheet */
-    @media (max-width: 767px) {
-      .bottom-sheet {
-        transform: translateY(calc(100% - 60px)); /* Peek height for mobile */
-      }
-      
-      .bottom-sheet.active {
-        transform: translateY(0); /* Fully open on mobile */
-      }
-      
-      .bottom-sheet.peek {
-        transform: translateY(calc(100% - 60px));
-      }
-      
-      .bottom-sheet-peek-content {
-        height: 60px;
-      }
-    }
-    
-    .bottom-sheet-handle {
-      width: 48px;
-      height: 4px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 2px;
-      margin: 12px auto 20px;
-      cursor: grab; /* Grab cursor for handle */
-      transition: background-color 0.3s;
-    }
-    
-    .bottom-sheet-handle:hover {
-      background: rgba(0, 0, 0, 0.5);
-    }
-    
-    .bottom-sheet-peek-content {
-      padding: 0 24px;
+      border-radius: 24px;
+      padding: 32px;
+      max-width: 420px;
+      width: 90%;
       text-align: center;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      animation: modalIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    @keyframes modalIn {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #999;
+      cursor: pointer;
+      padding: 4px;
+      transition: all 0.2s;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
+      border-radius: 50%;
     }
-    
-    .bottom-sheet-peek-text {
-      color: #666;
-      font-size: clamp(0.8rem, 2vw, 0.9rem);
-      font-weight: 500;
-    }
-    
-    .bottom-sheet-content {
-      padding: 0 24px 32px;
-      text-align: center;
+
+    .close-btn:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: #333;
     }
     
     /* Share Link Display */
@@ -499,11 +500,13 @@
       gap: 12px;
       margin-top: 20px;
       justify-content: center;
+      flex-wrap: wrap;
     }
     
-    .share-btn {
+    .share-options .share-btn {
       flex: 1;
-      max-width: 140px;
+      min-width: 140px;
+      max-width: 160px;
       padding: 14px 20px;
       font-size: clamp(0.8rem, 2vw, 0.9rem);
       border-radius: 16px;
@@ -960,8 +963,9 @@
         flex-direction: column;
       }
       
-      .share-btn {
+      .share-options .share-btn {
         max-width: none;
+        width: 100%;
       }
       
       .container {
@@ -1051,25 +1055,7 @@
       <p>아래 공유 버튼을 눌러 친구들에게 링크를 공유해보세요!</p>
     </div>
     
-    <div class="add-bubble" onclick="showShareOptions()" style="bottom: 30px;">📤</div>
-
-    <div class="bottom-sheet peek" id="share-sheet">
-      <div class="bottom-sheet-handle" role="button" aria-label="Toggle share sheet" tabindex="0"></div>
-      <div class="bottom-sheet-peek-content" role="button" aria-label="Open share options" tabindex="0">
-        <div class="bottom-sheet-peek-text">👆 친구들에게 공유하기</div>
-      </div>
-      <div class="bottom-sheet-content">
-        <p><strong id="owner-name">홍길동</strong>님의 롤링 페이퍼입니다 ✨</p>
-        <p>친구들에게 공유하세요:</p>
-        <div class="share-link" id="share-link">rolling-paper.com/p/abc123</div>
-        <div class="share-options">
-          <button class="share-btn" onclick="copyLink()">📋 링크 복사</button>
-          <button class="share-btn twitter-btn" onclick="shareToTwitter()">🐦 트위터</button>
-          <button class="share-btn instagram-btn" onclick="shareToInstagram()">📷 인스타그램</button>
-          <button class="share-btn kakao-btn" onclick="shareToKakao()">💬 카카오톡</button>
-        </div>
-      </div>
-    </div>
+    <button class="share-button-fixed" onclick="showShareModal()">🔗 공유하기</button>
   </div>
   
   <div class="screen hidden" id="comment-screen">
@@ -1135,6 +1121,21 @@
     <div class="button-row">
       <button onclick="submitComment()">💌 보내기</button>
       <button class="secondary" id="cancel-comment-btn" onclick="hideCommentForm()">취소</button>
+    </div>
+  </div>
+
+  <div class="share-modal" id="share-modal">
+    <div class="share-modal-content">
+      <button class="close-btn" onclick="hideShareModal()">✕</button>
+      <h2>공유하기</h2>
+      <p><strong id="owner-name-modal">홍길동</strong>님의 롤링 페이퍼입니다 ✨</p>
+      <div class="share-link" id="share-link-modal">rolling-paper.com/p/abc123</div>
+      <div class="share-options">
+        <button class="share-btn" onclick="copyLink()">📋 링크 복사</button>
+        <button class="share-btn twitter-btn" onclick="shareToTwitter()">🐦 트위터</button>
+        <button class="share-btn kakao-btn" onclick="shareToKakao()">💬 카카오톡</button>
+        <button class="share-btn instagram-btn" onclick="shareToInstagram()">📷 인스타그램</button>
+      </div>
     </div>
   </div>
 
@@ -1261,21 +1262,15 @@
         
         renderBubbles(formattedComments, 'bubbles-container', 'empty-state-owner');
 
-        document.getElementById('owner-name').textContent = currentUser.name;
+        document.getElementById('owner-name-modal').textContent = currentUser.name;
         const url = `${window.location.origin}${window.location.pathname}?id=${currentUser.id}`;
-        document.getElementById('share-link').textContent = url;
+        document.getElementById('share-link-modal').textContent = url;
 
         if (formattedComments.length > 0) {
           const instructions = document.getElementById('view-instructions');
           instructions.classList.add('show');
           setTimeout(() => instructions.classList.remove('show'), 3000);
         }
-        
-        setTimeout(() => {
-          const shareSheet = document.getElementById('share-sheet');
-          shareSheet.classList.add('peek');
-          shareSheet.classList.remove('active');
-        }, 500);
       }
 
       // --- Logic for Commenter's View ('comment-screen') ---
@@ -1308,14 +1303,14 @@
      */
     function updateUIForUserType() {
         const ownerControls = document.getElementById('owner-controls');
-        const shareSheet = document.getElementById('share-sheet');
+        const shareButton = document.querySelector('.share-button-fixed');
 
         if (isOwnerView) {
-            ownerControls.style.display = 'flex';
-            shareSheet.style.display = 'block';
+            if (ownerControls) ownerControls.style.display = 'flex';
+            if (shareButton) shareButton.style.display = 'block';
         } else {
-            ownerControls.style.display = 'none';
-            shareSheet.style.display = 'none';
+            if (ownerControls) ownerControls.style.display = 'none';
+            if (shareButton) shareButton.style.display = 'none';
         }
     }
     
@@ -1448,8 +1443,6 @@
     function logout() {
       currentUser = null;
       isOwnerView = false;
-      const shareSheet = document.getElementById('share-sheet');
-      shareSheet.classList.remove('active', 'peek');
       sessionStorage.removeItem('loggedInUserId'); // Clear the session
       window.location.href = window.location.pathname;
     }
@@ -1458,16 +1451,23 @@
         window.location.href = window.location.pathname;
     }
 
-    function showShareOptions() {
-      const shareSheet = document.getElementById('share-sheet');
-      shareSheet.classList.add('active');
-      shareSheet.classList.remove('peek');
+    function showShareModal() {
+      document.getElementById('share-modal').classList.add('active');
+      if (currentUser) {
+        document.getElementById('owner-name-modal').textContent = currentUser.name;
+        const url = `${window.location.origin}${window.location.pathname}?id=${currentUser.id}`;
+        document.getElementById('share-link-modal').textContent = url;
+      }
+    }
+
+    function hideShareModal() {
+      document.getElementById('share-modal').classList.remove('active');
     }
 
     function shareToKakao() {
       if (!currentUser) return;
       const ownerName = currentUser.name;
-      const url = document.getElementById('share-link').textContent;
+      const url = document.getElementById('share-link-modal').textContent;
       const text = `${ownerName}님의 롤링페이퍼에 익명으로 메시지를 남겨봐!`;
 
       // Open KakaoTalk sharing - mobile will open app, desktop will show web version
@@ -1645,14 +1645,7 @@
       // --- FIX IS HERE ---
       // 1. Get the heights of the header and bottom sheet.
       const header = document.querySelector('.header');
-      const shareSheet = document.getElementById('share-sheet');
       const headerHeight = header.offsetHeight;
-      
-      // Use peek height for bottom sheet if owner, otherwise 0
-      let bottomSheetHeight = 0;
-      if (isOwnerView) {
-          bottomSheetHeight = window.innerWidth <= 767 ? 60 : 80;
-      }
       
       const paddingPx = 10;
 
@@ -1660,7 +1653,7 @@
       const minX = paddingPx;
       const maxX = window.innerWidth - bubbleRect.width - paddingPx;
       const minY = headerHeight + paddingPx;
-      const maxY = window.innerHeight - bubbleRect.height - bottomSheetHeight - paddingPx;
+      const maxY = window.innerHeight - bubbleRect.height - paddingPx;
 
       // 3. Constrain the bubble within the new safe boundaries.
       newX_px = Math.max(minX, Math.min(newX_px, maxX));
@@ -1708,7 +1701,7 @@
      * Copies the share link to the clipboard.
      */
     function copyLink() {
-      const linkText = document.getElementById('share-link').textContent;
+      const linkText = document.getElementById('share-link-modal').textContent;
       navigator.clipboard.writeText(linkText).then(() => {
         showMessageModal('링크 복사', '링크가 복사되었습니다! 🎉');
       }).catch(err => {
@@ -1726,7 +1719,7 @@
     function shareToTwitter() {
     if (!currentUser) return;
     const ownerName = currentUser.name; // Assumes display name is in 'name'
-    const url = document.getElementById('share-link').textContent;
+    const url = document.getElementById('share-link-modal').textContent;
     const text = `궁금해~ 나 어떻게 생각해? ${ownerName}님의 롤링페이퍼에 익명으로 메시지를 남겨봐!`;
 
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
@@ -1763,15 +1756,6 @@
     }
     
     /**
-     * Toggles the share bottom sheet between 'peek' and 'active' states.
-     */
-    function toggleShareSheet() {
-      const shareSheet = document.getElementById('share-sheet');
-      shareSheet.classList.toggle('active');
-      shareSheet.classList.toggle('peek');
-    }
-    
-    /**
      * Hides the global overlay and any active modals/forms.
      */
     function hideOverlay() {
@@ -1779,10 +1763,7 @@
       hideDownloadModal();
       hideSuccessMessage();
       hideMessageModal();
-      
-      const shareSheet = document.getElementById('share-sheet');
-      shareSheet.classList.remove('active');
-      shareSheet.classList.add('peek');
+      hideShareModal();
     }
     
     /**
@@ -2090,11 +2071,6 @@
             isOwnerView = false;
             showScreen('welcome-screen');
         }
-        
-        // Add event listeners for the bottom sheet
-        const shareSheet = document.getElementById('share-sheet');
-        shareSheet.querySelector('.bottom-sheet-handle').addEventListener('click', toggleShareSheet);
-        shareSheet.querySelector('.bottom-sheet-peek-content').addEventListener('click', toggleShareSheet);
     }; 
       
   </script>
